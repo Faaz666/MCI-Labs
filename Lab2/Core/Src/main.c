@@ -132,31 +132,61 @@ int main(void)
     
 
   /* USER CODE END 2 */
-
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-    // /* USER CODE END WHILE */
+    /* USER CODE END WHILE */
     // int a =2, b=3;
     // //LHS
     // int temp1 = (a + b) * (a + b);
     // int temp2 = a * a + 2 * a * b + b * b;
     // myPrintf("LHS: (a + b)^2 = %d\r\n", temp1);
     // myPrintf("RHS: a^2 + 2ab + b^2 = %d\r\n", temp2);
-    static char str[] = "Microcontrollers";
-    int key = 9911;
-    char encrypted[sizeof(str)];
-    for (int i = 0; i < sizeof(str); i++) {
-      encrypted[i] = str[i] + (key%256);
+    // static char str[] = "Microcontrollers";
+    // int key = 9911;
+    // char encrypted[sizeof(str)];
+    // for (int i = 0; i < sizeof(str); i++) {
+    //   encrypted[i] = str[i] + (key%256);
+    // }
+    // char decrypted[sizeof(str)];
+    // for (int i = 0; i < sizeof(str); i++) {
+    //   decrypted[i] = encrypted[i] - (key%256);
+    // }
+    // myPrintf("Original: %s\r\n", str);
+    // myPrintf("Encrypted: %s\r\n", encrypted);
+    // myPrintf("Decrypted: %s\r\n", decrypted);
+    int A[2][2] = {{1,2}, {3,4}};
+    int B[2][2] = {{5,6}, {7,8}};
+    int C[2][2] = {{0,0}, {0,0}};
+    for (int i = 0; i < 2; i++) {
+      for (int j = 0; j < 2; j++) {
+        for (int k = 0; k < 2; k++) {
+          C[i][j] += A[i][k] * B[k][j];
+        }
+      }
     }
-    char decrypted[sizeof(str)];
-    for (int i = 0; i < sizeof(str); i++) {
-      decrypted[i] = encrypted[i] - (key%256);
+    myPrintf("Matrix A:\r\n");
+    for (int i = 0; i < 2; i++) {
+      for (int j = 0; j < 2; j++) {
+        myPrintf("%d ", A[i][j]);
+      }
+      myPrintf("\r\n");
     }
-    myPrintf("Original: %s\r\n", str);
-    myPrintf("Encrypted: %s\r\n", encrypted);
-    myPrintf("Decrypted: %s\r\n", decrypted);
+    myPrintf("Matrix B:\r\n");
+    for (int i = 0; i < 2; i++) {
+      for (int j = 0; j < 2; j++) {
+        myPrintf("%d ", B[i][j]);
+      }
+      myPrintf("\r\n");
+    }
+    myPrintf("Resultant Matrix C:\r\n");
+    for (int i = 0; i < 2; i++) {
+      for (int j = 0; j < 2; j++) {
+        myPrintf("%d ", C[i][j]);
+      }
+      myPrintf("\r\n");
+    }
     HAL_Delay(10);
     /* USER CODE BEGIN 3 */
   }
