@@ -25,6 +25,7 @@
 #include "stdarg.h"
 #include "stdio.h"
 #include "string.h"
+#include <sys/_intsup.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -136,14 +137,27 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-    /* USER CODE END WHILE */
-    int a =2, b=3;
-    //LHS
-    int temp1 = (a + b) * (a + b);
-    int temp2 = a * a + 2 * a * b + b * b;
-    myPrintf("LHS: (a + b)^2 = %d\r\n", temp1);
-    myPrintf("RHS: a^2 + 2ab + b^2 = %d\r\n", temp2);
-    HAL_Delay(1000);
+    // /* USER CODE END WHILE */
+    // int a =2, b=3;
+    // //LHS
+    // int temp1 = (a + b) * (a + b);
+    // int temp2 = a * a + 2 * a * b + b * b;
+    // myPrintf("LHS: (a + b)^2 = %d\r\n", temp1);
+    // myPrintf("RHS: a^2 + 2ab + b^2 = %d\r\n", temp2);
+    static char str[] = "Microcontrollers";
+    int key = 9911;
+    char encrypted[sizeof(str)];
+    for (int i = 0; i < sizeof(str); i++) {
+      encrypted[i] = str[i] + (key%256);
+    }
+    char decrypted[sizeof(str)];
+    for (int i = 0; i < sizeof(str); i++) {
+      decrypted[i] = encrypted[i] - (key%256);
+    }
+    myPrintf("Original: %s\r\n", str);
+    myPrintf("Encrypted: %s\r\n", encrypted);
+    myPrintf("Decrypted: %s\r\n", decrypted);
+    HAL_Delay(10);
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
