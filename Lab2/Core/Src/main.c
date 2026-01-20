@@ -18,10 +18,13 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "stm32f3xx_hal.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "stdarg.h"
+#include "stdio.h"
+#include "string.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -66,6 +69,29 @@ static void MX_USB_PCD_Init(void);
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 
+/**
+ * @brief Custom printf function for UART transmission
+ * @param fmt Format string with variable arguments
+ */
+void myPrintf(const char *fmt, ...) {
+  // TODO: Step 1 - Declare and initialize a character buffer .
+  char buffer[100];
+
+  // TODO: Step 2 - Initialize the variadic argument list.
+  va_list args;
+  va_start(args, fmt);
+
+  // TODO: Step 3 - Format the final string using vsnprintf .
+  int len = vsnprintf(buffer, sizeof(buffer), fmt, args);
+  va_end(args);
+
+  // TODO: Step 4 - Transmit the string over UART using HAL_UART_Transmit .  
+  if (len > 0) {
+    uint16_t tx_len = (len >= (int)sizeof(buffer)) ? (uint16_t)(sizeof(buffer) - 1U) : (uint16_t)len;
+    HAL_UART_Transmit(&huart2, (uint8_t *)buffer, tx_len, HAL_MAX_DELAY);
+  }
+}
+
 /* USER CODE END 0 */
 
 /**
@@ -102,6 +128,7 @@ int main(void)
   MX_USART2_UART_Init();
   MX_USB_PCD_Init();
   /* USER CODE BEGIN 2 */
+    
 
   /* USER CODE END 2 */
 
@@ -110,8 +137,12 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
-    char msg[] = "Hello, World!\r\n";
-    HAL_UART_Transmit(&huart2, (uint8_t *)msg, sizeof(msg) - 1U, HAL_MAX_DELAY);
+    int a =2, b=3;
+    //LHS
+    int temp1 = (a + b) * (a + b);
+    int temp2 = a * a + 2 * a * b + b * b;
+    myPrintf("LHS: (a + b)^2 = %d\r\n", temp1);
+    myPrintf("RHS: a^2 + 2ab + b^2 = %d\r\n", temp2);
     HAL_Delay(1000);
     /* USER CODE BEGIN 3 */
   }
