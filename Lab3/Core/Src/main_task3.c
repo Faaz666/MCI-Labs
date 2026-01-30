@@ -21,7 +21,6 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include <stdlib.h>
 
 /* USER CODE END Includes */
 
@@ -100,8 +99,9 @@ int main(void)
   MX_USB_PCD_Init();
   /* USER CODE BEGIN 2 */
 
-  int counter = 1;
-  GPIO_PinState prev= GPIO_PIN_RESET;
+  int counter = 0;
+  GPIO_PinState previnc = GPIO_PIN_RESET;
+  GPIO_PinState prevdec = GPIO_PIN_RESET;
 
   /* USER CODE END 2 */
 
@@ -110,13 +110,18 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
-    GPIO_PinState user = HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_0);
+    GPIO_PinState inc = HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_0);
+    GPIO_PinState dec = HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_5);
 
-    if ((user == GPIO_PIN_SET) && (prev == GPIO_PIN_RESET)) {
-      counter = (int)((rand() % 6) + 1);
+    if ((inc == GPIO_PIN_SET) && (previnc == GPIO_PIN_RESET)) {
+      counter = (counter + 1);
+    }
+    if ((dec == GPIO_PIN_SET) && (prevdec == GPIO_PIN_RESET)) {
+      counter = (counter - 1);
     }
 
-    prev = user;
+    previnc = inc;
+    prevdec = dec;
 
     // Turn all segments OFF (HIGH) for common anode
     HAL_GPIO_WritePin(GPIOD, GPIO_PIN_15, GPIO_PIN_SET);  // a
