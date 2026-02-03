@@ -149,10 +149,11 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+    myPrintf("faaz is am");
     if (period > 0)
     {
-      float frequency = 1500000.0f / (float)period;
-      myPrintf("Period: %lu | Freq: %.2f Hz\r\n", (unsigned long)period, frequency);
+      // float frequency = 1500000.0f / (float)period;
+      // myPrintf("Period: %lu | Freq: %.2f Hz\r\n", (unsigned long)period, frequency);
     }
     HAL_Delay(500);
   }
