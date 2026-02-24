@@ -50,7 +50,7 @@ SPI_HandleTypeDef hspi1;
 UART_HandleTypeDef huart1;
 
 PCD_HandleTypeDef hpcd_USB_FS;
-uint16_t raw[3];
+int16_t raw[3];
 float acc[3];
 float offset[3];
 /* USER CODE BEGIN PV */
@@ -81,33 +81,26 @@ void reader(uint8_t tx, uint8_t *rx) {
     HAL_GPIO_WritePin(GPIOE, GPIO_PIN_3, GPIO_PIN_SET);
 }
 
-/* Gyroscope control register defines */
-#define CTRL_REG1 0x20
-#define CTRL_REG1_VAL 0b00001111  /* PD=1 (Power on), Xen/Yen/Zen enabled */
-
 /* Gyroscope initialization */
 void gyro_init(void) {
-  uint8_t tx[2] = { CTRL_REG1, CTRL_REG1_VAL };
+  uint8_t tx[2] = { 0x20, 0b00001111 };
   HAL_GPIO_WritePin(GPIOE, GPIO_PIN_3, GPIO_PIN_RESET);
   HAL_SPI_Transmit(&hspi1, tx, 2, HAL_MAX_DELAY);
   HAL_GPIO_WritePin(GPIOE, GPIO_PIN_3, GPIO_PIN_SET);
 }
 
-#define CTRL_REG4 0x23
-#define CTRL_REG4_VAL 0b00000000  /* FS[1:0] = 00 => +/- 245 dps */
-
-/* Set gyroscope control register 4 */
 void gyro_set_ctrl_reg4(void) {
-  uint8_t tx[2] = { CTRL_REG4, CTRL_REG4_VAL };
+  uint8_t tx[2] = { 0x23, 0b00000000 };
   HAL_GPIO_WritePin(GPIOE, GPIO_PIN_3, GPIO_PIN_RESET);
   HAL_SPI_Transmit(&hspi1, tx, 2, HAL_MAX_DELAY);
   HAL_GPIO_WritePin(GPIOE, GPIO_PIN_3, GPIO_PIN_SET);
 }
 
 /* Convert two 8-bit values to 16-bit with read bit */
-uint16_t read_16bit(uint8_t OUT_X_H, uint8_t OUT_X_L) {
-  return (OUT_X_H << 8) | OUT_X_L | 0x8000;
+int16_t read_16bit(uint8_t H, uint8_t L) {
+  return (int16_t)((H << 8) | L);
 }
+
 
 void Init_LSM() {
   uint8_t a = 0x67;
@@ -130,12 +123,9 @@ void Read_LSM() {
   raw[0] = (int16_t)(high[0] << 8) | low[0];
   raw[1] = (int16_t)(high[1] << 8) | low[1];
   raw[2] = (int16_t)(high[2] << 8) | low[2];
-  acc[0] = raw[0] * 3.9f;
-  acc[1] = raw[1] * 3.9f;
-  acc[2] = raw[2] * 3.9f;
-  acc[0] = RAD_TO_DEG(acc[0]);
-  acc[1] = RAD_TO_DEG(acc[1]);
-  acc[2] = RAD_TO_DEG(acc[2]); 
+  acc[0] = raw[0] * 3.9f/1000.0f;
+  acc[1] = raw[1] * 3.9f/1000.0f;
+  acc[2] = raw[2] * 3.9f/1000.0f;
   acc[0] -= offset[0];
   acc[1] -= offset[1];
   acc[2] -= offset[2];
@@ -157,9 +147,9 @@ void Offset_LSM() {
     HAL_I2C_Mem_Read(&hi2c1, 0x33, 0x2A, 1, &low[1], 1, HAL_MAX_DELAY);
     HAL_I2C_Mem_Read(&hi2c1, 0x33, 0x2D, 1, &high[2], 1, HAL_MAX_DELAY);
     HAL_I2C_Mem_Read(&hi2c1, 0x33, 0x2C, 1, &low[2], 1, HAL_MAX_DELAY);
-    temp_acc[0] += ((int16_t)(high[0] << 8) | low[0]) * 3.9f;
-    temp_acc[1] += ((int16_t)(high[1] << 8) | low[1]) * 3.9f;
-    temp_acc[2] += ((int16_t)(high[2] << 8) | low[2]) * 3.9f;
+    temp_acc[0] += ((int16_t)(high[0] << 8) | low[0]) * 3.9f/1000.0f;
+    temp_acc[1] += ((int16_t)(high[1] << 8) | low[1]) * 3.9f/1000.0f;
+    temp_acc[2] += ((int16_t)(high[2] << 8) | low[2]) * 3.9f/1000.0f;
     HAL_Delay(10);
   }
   offset[0] = temp_acc[0] / 20.0f;
@@ -219,14 +209,13 @@ int main(void)
     Print_LSM();
     
     /* Read gyroscope */
-    uint8_t xH, xL, yH, yL, zH, zL, temp_raw;
+    uint8_t xH, xL, yH, yL, zH, zL;
     reader(0x80 | 0x29, &xH);
     reader(0x80 | 0x28, &xL);
     reader(0x80 | 0x2B, &yH);
     reader(0x80 | 0x2A, &yL);
     reader(0x80 | 0x2D, &zH);
     reader(0x80 | 0x2C, &zL);
-    reader(0x80 | 0x26, &temp_raw);
     
     int16_t x = read_16bit(xH, xL);
     int16_t y = read_16bit(yH, yL);
@@ -235,10 +224,9 @@ int main(void)
     float x_dps = x * 0.00875f;
     float y_dps = y * 0.00875f;
     float z_dps = z * 0.00875f;     
-    float temp_display = -(temp_raw) + 43.0f;
     
     char buffer[100];
-    int n = snprintf(buffer, sizeof(buffer), "%.2f,%.2f,%.2f,%.2f\r\n", temp_display, x_dps, y_dps, z_dps);
+    int n = snprintf(buffer, sizeof(buffer), "%.2f,%.2f,%.2f\r\n", x_dps, y_dps, z_dps);
     if (n > 0) {
       HAL_UART_Transmit(&huart1, (uint8_t*)buffer, n, HAL_MAX_DELAY);
     }
