@@ -97,7 +97,10 @@ HAL_SPI_Transmit (& hspi1 , tx , 2, HAL_MAX_DELAY );
 
 HAL_GPIO_WritePin (GPIOE , GPIO_PIN_3 , GPIO_PIN_SET );
 }
-uint16_t read_16bit(uint8_t OUT_X_H, uint8_t OUT_X_L) {return (OUT_X_H << 8) | OUT_X_L  | 0x8000;}
+int16_t read_16bit(uint8_t H, uint8_t L) {
+  return (int16_t)((H << 8) | L);
+}
+
 
 
 

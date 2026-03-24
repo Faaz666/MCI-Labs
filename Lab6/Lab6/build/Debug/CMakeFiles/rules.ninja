@@ -62,7 +62,7 @@ rule C_COMPILER__STM32_Drivers_unscanned_Debug
 # Rule for re-running cmake.
 
 rule RERUN_CMAKE
-  command = /home/labt1/snap/code/228/.local/share/stm32cube/bundles/cmake/4.0.1+st.3/bin/cmake --regenerate-during-build -S/home/labt1/MCI-Labs/Lab6/Lab6 -B/home/labt1/MCI-Labs/Lab6/Lab6/build/Debug
+  command = /home/labt1/snap/code/230/.local/share/stm32cube/bundles/cmake/4.0.1+st.3/bin/cmake --regenerate-during-build -S/home/labt1/MCI-Labs/Lab6/Lab6 -B/home/labt1/MCI-Labs/Lab6/Lab6/build/Debug
   description = Re-running CMake...
   generator = 1
 
@@ -71,7 +71,7 @@ rule RERUN_CMAKE
 # Rule for cleaning additional files.
 
 rule CLEAN_ADDITIONAL
-  command = /home/labt1/snap/code/228/.local/share/stm32cube/bundles/cmake/4.0.1+st.3/bin/cmake -DCONFIG=$CONFIG -P CMakeFiles/clean_additional.cmake
+  command = /home/labt1/snap/code/230/.local/share/stm32cube/bundles/cmake/4.0.1+st.3/bin/cmake -DCONFIG=$CONFIG -P CMakeFiles/clean_additional.cmake
   description = Cleaning additional files...
 
 
