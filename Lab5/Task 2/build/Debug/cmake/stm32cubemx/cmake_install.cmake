@@ -1,4 +1,4 @@
-# Install script for directory: /home/labt1/MCI-Labs/Lab5/Lab5/cmake/stm32cubemx
+# Install script for directory: /home/labt1/MCI-Labs/Lab5/Task 2/cmake/stm32cubemx
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -34,12 +34,12 @@ endif()
 
 # Set path to fallback-tool for dependency-resolution.
 if(NOT DEFINED CMAKE_OBJDUMP)
-  set(CMAKE_OBJDUMP "/home/labt1/snap/code/225/.local/share/stm32cube/bundles/gnu-tools-for-stm32/14.3.1+st.2/bin/arm-none-eabi-objdump")
+  set(CMAKE_OBJDUMP "/home/labt1/snap/code/230/.local/share/stm32cube/bundles/gnu-tools-for-stm32/14.3.1+st.2/bin/arm-none-eabi-objdump")
 endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
 if(CMAKE_INSTALL_LOCAL_ONLY)
-  file(WRITE "/home/labt1/MCI-Labs/Lab5/Lab5/build/Debug/cmake/stm32cubemx/install_local_manifest.txt"
+  file(WRITE "/home/labt1/MCI-Labs/Lab5/Task 2/build/Debug/cmake/stm32cubemx/install_local_manifest.txt"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")
 endif()

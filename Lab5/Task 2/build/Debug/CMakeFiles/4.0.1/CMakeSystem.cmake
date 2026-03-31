@@ -1,9 +1,9 @@
-set(CMAKE_HOST_SYSTEM "Linux-6.8.0-101-generic")
+set(CMAKE_HOST_SYSTEM "Linux-6.8.0-106-generic")
 set(CMAKE_HOST_SYSTEM_NAME "Linux")
-set(CMAKE_HOST_SYSTEM_VERSION "6.8.0-101-generic")
+set(CMAKE_HOST_SYSTEM_VERSION "6.8.0-106-generic")
 set(CMAKE_HOST_SYSTEM_PROCESSOR "x86_64")
 
-include("/home/labt1/MCI-Labs/Lab5/Lab5/cmake/gcc-arm-none-eabi.cmake")
+include("/home/labt1/MCI-Labs/Lab5/Task 2/cmake/gcc-arm-none-eabi.cmake")
 
 set(CMAKE_SYSTEM "Generic")
 set(CMAKE_SYSTEM_NAME "Generic")
