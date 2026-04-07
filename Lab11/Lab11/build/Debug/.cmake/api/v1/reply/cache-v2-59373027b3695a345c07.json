@@ -15,7 +15,7 @@
 				}
 			],
 			"type" : "FILEPATH",
-			"value" : "/home/labt1/snap/code/230/.local/share/stm32cube/bundles/gnu-tools-for-stm32/14.3.1+st.2/bin/arm-none-eabi-addr2line"
+			"value" : "/home/labt1/snap/code/232/.local/share/stm32cube/bundles/gnu-tools-for-stm32/14.3.1+st.2/bin/arm-none-eabi-addr2line"
 		},
 		{
 			"name" : "CMAKE_AR",
@@ -31,7 +31,7 @@
 				}
 			],
 			"type" : "FILEPATH",
-			"value" : "/home/labt1/snap/code/230/.local/share/stm32cube/bundles/gnu-tools-for-stm32/14.3.1+st.2/bin/arm-none-eabi-ar"
+			"value" : "/home/labt1/snap/code/232/.local/share/stm32cube/bundles/gnu-tools-for-stm32/14.3.1+st.2/bin/arm-none-eabi-ar"
 		},
 		{
 			"name" : "CMAKE_ASM_COMPILER_AR",
@@ -47,7 +47,7 @@
 				}
 			],
 			"type" : "FILEPATH",
-			"value" : "/home/labt1/snap/code/230/.local/share/stm32cube/bundles/gnu-tools-for-stm32/14.3.1+st.2/bin/arm-none-eabi-gcc-ar"
+			"value" : "/home/labt1/snap/code/232/.local/share/stm32cube/bundles/gnu-tools-for-stm32/14.3.1+st.2/bin/arm-none-eabi-gcc-ar"
 		},
 		{
 			"name" : "CMAKE_ASM_COMPILER_RANLIB",
@@ -63,7 +63,7 @@
 				}
 			],
 			"type" : "FILEPATH",
-			"value" : "/home/labt1/snap/code/230/.local/share/stm32cube/bundles/gnu-tools-for-stm32/14.3.1+st.2/bin/arm-none-eabi-gcc-ranlib"
+			"value" : "/home/labt1/snap/code/232/.local/share/stm32cube/bundles/gnu-tools-for-stm32/14.3.1+st.2/bin/arm-none-eabi-gcc-ranlib"
 		},
 		{
 			"name" : "CMAKE_ASM_COMPILER_WORKS",
@@ -223,11 +223,11 @@
 			[
 				{
 					"name" : "HELPSTRING",
-					"value" : "Path to CMake executable."
+					"value" : "No help, variable specified on the command line."
 				}
 			],
-			"type" : "INTERNAL",
-			"value" : "/home/labt1/snap/code/230/.local/share/stm32cube/bundles/cmake/4.0.1+st.3/bin/cmake"
+			"type" : "UNINITIALIZED",
+			"value" : "cube-cmake"
 		},
 		{
 			"name" : "CMAKE_CPACK_COMMAND",
@@ -239,7 +239,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "/home/labt1/snap/code/230/.local/share/stm32cube/bundles/cmake/4.0.1+st.3/bin/cpack"
+			"value" : "/home/labt1/snap/code/232/.local/share/stm32cube/bundles/cmake/4.0.1+st.3/bin/cpack"
 		},
 		{
 			"name" : "CMAKE_CTEST_COMMAND",
@@ -251,7 +251,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "/home/labt1/snap/code/230/.local/share/stm32cube/bundles/cmake/4.0.1+st.3/bin/ctest"
+			"value" : "/home/labt1/snap/code/232/.local/share/stm32cube/bundles/cmake/4.0.1+st.3/bin/ctest"
 		},
 		{
 			"name" : "CMAKE_CXX_COMPILER_AR",
@@ -267,7 +267,7 @@
 				}
 			],
 			"type" : "FILEPATH",
-			"value" : "/home/labt1/snap/code/230/.local/share/stm32cube/bundles/gnu-tools-for-stm32/14.3.1+st.2/bin/arm-none-eabi-gcc-ar"
+			"value" : "/home/labt1/snap/code/232/.local/share/stm32cube/bundles/gnu-tools-for-stm32/14.3.1+st.2/bin/arm-none-eabi-gcc-ar"
 		},
 		{
 			"name" : "CMAKE_CXX_COMPILER_RANLIB",
@@ -283,7 +283,7 @@
 				}
 			],
 			"type" : "FILEPATH",
-			"value" : "/home/labt1/snap/code/230/.local/share/stm32cube/bundles/gnu-tools-for-stm32/14.3.1+st.2/bin/arm-none-eabi-gcc-ranlib"
+			"value" : "/home/labt1/snap/code/232/.local/share/stm32cube/bundles/gnu-tools-for-stm32/14.3.1+st.2/bin/arm-none-eabi-gcc-ranlib"
 		},
 		{
 			"name" : "CMAKE_CXX_FLAGS",
@@ -379,7 +379,7 @@
 				}
 			],
 			"type" : "FILEPATH",
-			"value" : "/home/labt1/snap/code/230/.local/share/stm32cube/bundles/gnu-tools-for-stm32/14.3.1+st.2/bin/arm-none-eabi-gcc-ar"
+			"value" : "/home/labt1/snap/code/232/.local/share/stm32cube/bundles/gnu-tools-for-stm32/14.3.1+st.2/bin/arm-none-eabi-gcc-ar"
 		},
 		{
 			"name" : "CMAKE_C_COMPILER_RANLIB",
@@ -395,7 +395,7 @@
 				}
 			],
 			"type" : "FILEPATH",
-			"value" : "/home/labt1/snap/code/230/.local/share/stm32cube/bundles/gnu-tools-for-stm32/14.3.1+st.2/bin/arm-none-eabi-gcc-ranlib"
+			"value" : "/home/labt1/snap/code/232/.local/share/stm32cube/bundles/gnu-tools-for-stm32/14.3.1+st.2/bin/arm-none-eabi-gcc-ranlib"
 		},
 		{
 			"name" : "CMAKE_C_FLAGS",
@@ -503,7 +503,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "/home/labt1/snap/code/230/.local/share/stm32cube/bundles/cmake/4.0.1+st.3/bin/ccmake"
+			"value" : "/home/labt1/snap/code/232/.local/share/stm32cube/bundles/cmake/4.0.1+st.3/bin/ccmake"
 		},
 		{
 			"name" : "CMAKE_EXECUTABLE_FORMAT",
@@ -735,7 +735,7 @@
 				}
 			],
 			"type" : "FILEPATH",
-			"value" : "/home/labt1/snap/code/230/.local/share/stm32cube/bundles/ninja/1.13.1+st.1/bin/ninja"
+			"value" : "/home/labt1/snap/code/232/.local/share/stm32cube/bundles/ninja/1.13.1+st.1/bin/ninja"
 		},
 		{
 			"name" : "CMAKE_MODULE_LINKER_FLAGS",
@@ -831,7 +831,7 @@
 				}
 			],
 			"type" : "FILEPATH",
-			"value" : "/home/labt1/snap/code/230/.local/share/stm32cube/bundles/gnu-tools-for-stm32/14.3.1+st.2/bin/arm-none-eabi-nm"
+			"value" : "/home/labt1/snap/code/232/.local/share/stm32cube/bundles/gnu-tools-for-stm32/14.3.1+st.2/bin/arm-none-eabi-nm"
 		},
 		{
 			"name" : "CMAKE_NUMBER_OF_MAKEFILES",
@@ -859,7 +859,7 @@
 				}
 			],
 			"type" : "FILEPATH",
-			"value" : "/home/labt1/snap/code/230/.local/share/stm32cube/bundles/gnu-tools-for-stm32/14.3.1+st.2/bin/arm-none-eabi-objdump"
+			"value" : "/home/labt1/snap/code/232/.local/share/stm32cube/bundles/gnu-tools-for-stm32/14.3.1+st.2/bin/arm-none-eabi-objdump"
 		},
 		{
 			"name" : "CMAKE_PLATFORM_INFO_INITIALIZED",
@@ -923,7 +923,7 @@
 				}
 			],
 			"type" : "FILEPATH",
-			"value" : "/home/labt1/snap/code/230/.local/share/stm32cube/bundles/gnu-tools-for-stm32/14.3.1+st.2/bin/arm-none-eabi-ranlib"
+			"value" : "/home/labt1/snap/code/232/.local/share/stm32cube/bundles/gnu-tools-for-stm32/14.3.1+st.2/bin/arm-none-eabi-ranlib"
 		},
 		{
 			"name" : "CMAKE_READELF",
@@ -939,7 +939,7 @@
 				}
 			],
 			"type" : "FILEPATH",
-			"value" : "/home/labt1/snap/code/230/.local/share/stm32cube/bundles/gnu-tools-for-stm32/14.3.1+st.2/bin/arm-none-eabi-readelf"
+			"value" : "/home/labt1/snap/code/232/.local/share/stm32cube/bundles/gnu-tools-for-stm32/14.3.1+st.2/bin/arm-none-eabi-readelf"
 		},
 		{
 			"name" : "CMAKE_ROOT",
@@ -951,7 +951,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "/home/labt1/snap/code/230/.local/share/stm32cube/bundles/cmake/4.0.1+st.3/share/cmake-4.0"
+			"value" : "/home/labt1/snap/code/232/.local/share/stm32cube/bundles/cmake/4.0.1+st.3/share/cmake-4.0"
 		},
 		{
 			"name" : "CMAKE_SHARED_LINKER_FLAGS",
@@ -1159,7 +1159,7 @@
 				}
 			],
 			"type" : "FILEPATH",
-			"value" : "/home/labt1/snap/code/230/.local/share/stm32cube/bundles/gnu-tools-for-stm32/14.3.1+st.2/bin/arm-none-eabi-strip"
+			"value" : "/home/labt1/snap/code/232/.local/share/stm32cube/bundles/gnu-tools-for-stm32/14.3.1+st.2/bin/arm-none-eabi-strip"
 		},
 		{
 			"name" : "CMAKE_TAPI",

@@ -22,7 +22,6 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include <math.h>
-#include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
 
@@ -48,6 +47,7 @@ I2C_HandleTypeDef hi2c1;
 
 SPI_HandleTypeDef hspi1;
 
+TIM_HandleTypeDef htim2;
 TIM_HandleTypeDef htim3;
 
 UART_HandleTypeDef huart1;
@@ -55,10 +55,12 @@ UART_HandleTypeDef huart1;
 /* USER CODE BEGIN PV */
 int16_t raw[3];
 float acc[3];
-float offset[3];
 float gyro_offset[3];
 float angle = 0.0f;
-float angle_zero = 0.0f;
+volatile uint8_t flag = 0;
+volatile float acc_v = 0.0f;
+volatile float gyro_v = 0.0f;
+volatile float ang_v = 0.0f;
 
 /* USER CODE END PV */
 
@@ -69,18 +71,13 @@ static void MX_I2C1_Init(void);
 static void MX_SPI1_Init(void);
 static void MX_USART1_UART_Init(void);
 static void MX_TIM3_Init(void);
+static void MX_TIM2_Init(void);
 /* USER CODE BEGIN PFP */
 void gyro_init(void);
 void gyro_set_ctrl_reg4(void);
 void Init_LSM(void);
 void Read_LSM(void);
-void Offset_LSM(void);
 void Offset_Gyro(void);
-void aagechal(int time, int dc);
-void seedhehaath(int time, int dc);
-void ultehaath(int time, int dc);
-void peechehutt(int time, int dc);
-void rukjao(void);
 
 /* USER CODE END PFP */
 
@@ -144,114 +141,23 @@ void Read_LSM(void)
   acc[2] = raw[2] * 0.001f;
 }
 
-void Offset_LSM(void)
-{
-  uint8_t high[3], low[3];
-  float temp_acc[2] = {0.0f, 0.0f};
-
-  for (int i = 0; i < 200; i++)
-  {
-    HAL_I2C_Mem_Read(&hi2c1, 0x33, 0x29, 1, &high[0], 1, HAL_MAX_DELAY);
-    HAL_I2C_Mem_Read(&hi2c1, 0x33, 0x28, 1, &low[0], 1, HAL_MAX_DELAY);
-    HAL_I2C_Mem_Read(&hi2c1, 0x33, 0x2B, 1, &high[1], 1, HAL_MAX_DELAY);
-    HAL_I2C_Mem_Read(&hi2c1, 0x33, 0x2A, 1, &low[1], 1, HAL_MAX_DELAY);
-    HAL_I2C_Mem_Read(&hi2c1, 0x33, 0x2D, 1, &high[2], 1, HAL_MAX_DELAY);
-    HAL_I2C_Mem_Read(&hi2c1, 0x33, 0x2C, 1, &low[2], 1, HAL_MAX_DELAY);
-
-    temp_acc[0] += (int16_t)(((int16_t)((high[0] << 8) | low[0])) >> 4) * 0.001f;
-    temp_acc[1] += (int16_t)(((int16_t)((high[1] << 8) | low[1])) >> 4) * 0.001f;
-    HAL_Delay(5);
-  }
-
-  offset[0] = temp_acc[0] / 200.0f;
-  offset[1] = temp_acc[1] / 200.0f;
-  offset[2] = 0.0f;
-}
-
 void Offset_Gyro(void)
 {
   float temp = 0.0f;
 
   for (int i = 0; i < 200; i++)
   {
-    uint8_t xH, xL;
-    reader(0x80 | 0x29, &xH);
-    reader(0x80 | 0x28, &xL);
+    uint8_t yH, yL;
+    reader(0x80 | 0x2B, &yH);
+    reader(0x80 | 0x2A, &yL);
 
-    temp += read_16bit(xH, xL) * 0.00875f;
+    temp += read_16bit(yH, yL) * 0.00875f;
     HAL_Delay(5);
   }
 
-  gyro_offset[0] = temp / 200.0f;
-  gyro_offset[1] = 0.0f;
+  gyro_offset[1] = temp / 200.0f;
+  gyro_offset[0] = 0.0f;
   gyro_offset[2] = 0.0f;
-}
-
-void aagechal(int time, int dc)
-{
-  __HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, dc);
-  __HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_2, dc);
-
-  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_5, GPIO_PIN_SET);
-  HAL_GPIO_WritePin(GPIOD, GPIO_PIN_4, GPIO_PIN_RESET);
-
-  HAL_GPIO_WritePin(GPIOD, GPIO_PIN_2, GPIO_PIN_SET);
-  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_9, GPIO_PIN_RESET);
-
-  HAL_Delay(time);
-}
-
-void seedhehaath(int time, int dc)
-{
-  __HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, dc);
-  __HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_2, dc);
-
-  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_5, GPIO_PIN_SET);
-  HAL_GPIO_WritePin(GPIOD, GPIO_PIN_4, GPIO_PIN_RESET);
-
-  HAL_GPIO_WritePin(GPIOD, GPIO_PIN_2, GPIO_PIN_RESET);
-  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_9, GPIO_PIN_SET);
-
-  HAL_Delay(time);
-}
-
-void ultehaath(int time, int dc)
-{
-  __HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, dc);
-  __HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_2, dc);
-
-  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_5, GPIO_PIN_RESET);
-  HAL_GPIO_WritePin(GPIOD, GPIO_PIN_4, GPIO_PIN_SET);
-
-  HAL_GPIO_WritePin(GPIOD, GPIO_PIN_2, GPIO_PIN_SET);
-  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_9, GPIO_PIN_RESET);
-
-  HAL_Delay(time);
-}
-
-void peechehutt(int time, int dc)
-{
-  __HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, dc);
-  __HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_2, dc);
-
-  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_5, GPIO_PIN_RESET);
-  HAL_GPIO_WritePin(GPIOD, GPIO_PIN_4, GPIO_PIN_SET);
-
-  HAL_GPIO_WritePin(GPIOD, GPIO_PIN_2, GPIO_PIN_RESET);
-  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_9, GPIO_PIN_SET);
-
-  HAL_Delay(time);
-}
-
-void rukjao(void)
-{
-  __HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, 0);
-  __HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_2, 0);
-
-  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_5, GPIO_PIN_RESET);
-  HAL_GPIO_WritePin(GPIOD, GPIO_PIN_4, GPIO_PIN_RESET);
-  HAL_GPIO_WritePin(GPIOD, GPIO_PIN_2, GPIO_PIN_RESET);
-  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_9, GPIO_PIN_RESET);
 }
 
 /* USER CODE END 0 */
@@ -289,26 +195,19 @@ int main(void)
   MX_SPI1_Init();
   MX_USART1_UART_Init();
   MX_TIM3_Init();
+  MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
   Init_LSM();
   gyro_init();
   gyro_set_ctrl_reg4();
-  HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_1);
-  HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_2);
-  rukjao();
 
   HAL_Delay(500);
   Offset_Gyro();
-  angle_zero = 0.0f;
-  for (int i = 0; i < 100; i++)
-  {
-    Read_LSM();
-    angle_zero += atan2f(acc[0], acc[2]) * 57.2958f;
-    HAL_Delay(10);
-  }
-  angle_zero /= 100.0f;
-  angle = angle_zero;
-
+  Read_LSM();
+  angle = atan2f(acc[0], acc[2]) * 57.2958f;
+  HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_1);
+  HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_2);
+  HAL_TIM_Base_Start_IT(&htim2);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -318,34 +217,16 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-    Read_LSM();
-
-    uint8_t xH, xL;
-    reader(0x80 | 0x29, &xH);
-    reader(0x80 | 0x28, &xL);
-
-    int16_t x = read_16bit(xH, xL);
-    float x_dps = x * 0.00875f - gyro_offset[0];
-    float acc_angle = atan2f(acc[0], acc[2]) * 57.2958f;
-    float acc_angle_zeroed = acc_angle - angle_zero;
-    float dt = 0.01f;
-
-    if (fabsf(x_dps) < 0.25f)
+    if (flag)
     {
-      x_dps = 0.0f;
+      char buffer[80];
+      int n = snprintf(buffer, sizeof(buffer), "%.2f,%.2f,%.2f\r\n", acc_v, gyro_v, ang_v);
+      if (n > 0)
+      {
+        HAL_UART_Transmit(&huart1, (uint8_t *)buffer, (uint16_t)n, HAL_MAX_DELAY);
+      }
+      flag = 0;
     }
-
-    angle = 0.98f * (angle + x_dps * dt) + 0.02f * acc_angle;
-    float angle_zeroed = angle - angle_zero;
-
-    char buffer[80];
-    int n = snprintf(buffer, sizeof(buffer), "%.2f,%.2f,%.2f\r\n", acc_angle_zeroed, x_dps, angle_zeroed);
-    if (n > 0)
-    {
-      HAL_UART_Transmit(&huart1, (uint8_t *)buffer, (uint16_t)n, HAL_MAX_DELAY);
-    }
-
-    HAL_Delay(10);
   }
   /* USER CODE END 3 */
 }
@@ -483,6 +364,51 @@ static void MX_SPI1_Init(void)
   /* USER CODE BEGIN SPI1_Init 2 */
 
   /* USER CODE END SPI1_Init 2 */
+
+}
+
+/**
+  * @brief TIM2 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_TIM2_Init(void)
+{
+
+  /* USER CODE BEGIN TIM2_Init 0 */
+
+  /* USER CODE END TIM2_Init 0 */
+
+  TIM_ClockConfigTypeDef sClockSourceConfig = {0};
+  TIM_MasterConfigTypeDef sMasterConfig = {0};
+
+  /* USER CODE BEGIN TIM2_Init 1 */
+
+  /* USER CODE END TIM2_Init 1 */
+  htim2.Instance = TIM2;
+  htim2.Init.Prescaler = 4799;
+  htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim2.Init.Period = 49;
+  htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+  htim2.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+  if (HAL_TIM_Base_Init(&htim2) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
+  if (HAL_TIM_ConfigClockSource(&htim2, &sClockSourceConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
+  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+  if (HAL_TIMEx_MasterConfigSynchronization(&htim2, &sMasterConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN TIM2_Init 2 */
+
+  /* USER CODE END TIM2_Init 2 */
 
 }
 
@@ -660,7 +586,72 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+{
+  if (htim->Instance == TIM2)
+  {
+    Read_LSM();
 
+    uint8_t yH, yL;
+    reader(0x80 | 0x2B, &yH);
+    reader(0x80 | 0x2A, &yL);
+
+    int16_t y = read_16bit(yH, yL);
+    float x_dps = y * 0.00875f - gyro_offset[1];
+    float acc_angle = atan2f(acc[0], acc[2]) * 57.2958f;
+    float dt = 0.005f;
+
+    angle = 0.98f * (angle + x_dps * dt) + 0.02f * acc_angle;
+    // PID
+    static float integral = 0.0f;
+    static float prev_error = 0.0f;
+    float Kp = 30.0f;
+    float Ki = 0.5f;
+    float Kd = 5.0f;
+
+    float error = 0.0f - angle;
+    integral += error * dt;
+    if (integral > 500) integral = 500;
+    if (integral < -500) integral = -500;
+    float derivative = (error - prev_error) / dt;
+    float output = Kp * error + Ki * integral + Kd * derivative;
+    prev_error = error;
+
+    int pwm = (int)fabsf(output);
+    if (pwm > 999) pwm = 999;
+    if (pwm < 50) pwm = 0;
+
+    if (output < 0) {
+      __HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, pwm);
+      __HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_2, pwm);
+      HAL_GPIO_WritePin(GPIOB, GPIO_PIN_5, GPIO_PIN_SET);
+      HAL_GPIO_WritePin(GPIOD, GPIO_PIN_4, GPIO_PIN_RESET);
+      HAL_GPIO_WritePin(GPIOD, GPIO_PIN_2, GPIO_PIN_SET);
+      HAL_GPIO_WritePin(GPIOB, GPIO_PIN_9, GPIO_PIN_RESET);
+    } else if (output > 0) {
+      __HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, pwm);
+      __HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_2, pwm);
+      HAL_GPIO_WritePin(GPIOB, GPIO_PIN_5, GPIO_PIN_RESET);
+      HAL_GPIO_WritePin(GPIOD, GPIO_PIN_4, GPIO_PIN_SET);
+      HAL_GPIO_WritePin(GPIOD, GPIO_PIN_2, GPIO_PIN_RESET);
+      HAL_GPIO_WritePin(GPIOB, GPIO_PIN_9, GPIO_PIN_SET);
+    } else {
+      __HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, 0);
+      __HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_2, 0);
+    }
+    acc_v = acc_angle;
+    gyro_v = x_dps;
+    ang_v = angle;
+
+    static int counter = 0;
+    counter++;
+    if (counter >= 20)
+    {
+      flag = 1;
+      counter = 0;
+    }
+  }
+}
 /* USER CODE END 4 */
 
 /**
