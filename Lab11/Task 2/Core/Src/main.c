@@ -598,7 +598,6 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
   {
     Read_LSM(); 
 
-    // --- BURST READ THE GYRO (Prevents Lockup) ---
     float x_dps = Gyro_ReadY() - gyro_offset[1];
     
     float acc_angle = atan2f(acc[0], acc[2]) * 57.2958f;
@@ -606,16 +605,14 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 
     angle = 0.98f * (angle + x_dps * dt) + 0.02f * acc_angle;
     
-    // --- TUNED PID ---
     static float integral = 0.0f;
-    float Kp = 1.15f;   // Slightly stiffer spring
-    float Ki = 0.05f;   // Much lower Ki to prevent the 5-second death push
-    float Kd = 0.15f;   // Stronger shock absorber to stop jitter
+    float Kp = 2.15f;
+    float Ki = 0.05f;
+    float Kd = 0.07f;
 
-    float error = -3.75f - angle; // Your mechanical balance point
+    float error = -3.5f - angle; 
     
     integral += error * dt;
-    // Tighter clamp to prevent integral windup!
     if (integral > 200) integral = 200; 
     if (integral < -200) integral = -200;
     
@@ -626,14 +623,14 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
     int pwm = (int)fabsf(output);
     
     if (pwm > 0) {
-        pwm += 80; // Friction deadband
+        pwm += 80;
     }
 
     if (pwm > 999) pwm = 999;
     
     if (fabsf(angle) > 40.0f) {
         pwm = 0;
-        integral = 0.0f; // Reset integral if it falls!
+        integral = 0.0f; 
     }
 
     if (output < 0 && pwm > 0) {
