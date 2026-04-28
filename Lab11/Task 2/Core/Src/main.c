@@ -122,19 +122,15 @@ void Init_LSM(void)
 
 void Read_LSM(void)
 {
-  uint8_t high[3];
-  uint8_t low[3];
+  uint8_t buf[6];
+  
+  // 0x28 | 0x80 sets the auto-increment bit. It pulls all 6 bytes in one fast transaction!
+  HAL_I2C_Mem_Read(&hi2c1, 0x33, 0x28 | 0x80, 1, buf, 6, 5); // 5ms timeout instead of HAL_MAX_DELAY
 
-  HAL_I2C_Mem_Read(&hi2c1, 0x33, 0x29, 1, &high[0], 1, HAL_MAX_DELAY);
-  HAL_I2C_Mem_Read(&hi2c1, 0x33, 0x28, 1, &low[0], 1, HAL_MAX_DELAY);
-  HAL_I2C_Mem_Read(&hi2c1, 0x33, 0x2B, 1, &high[1], 1, HAL_MAX_DELAY);
-  HAL_I2C_Mem_Read(&hi2c1, 0x33, 0x2A, 1, &low[1], 1, HAL_MAX_DELAY);
-  HAL_I2C_Mem_Read(&hi2c1, 0x33, 0x2D, 1, &high[2], 1, HAL_MAX_DELAY);
-  HAL_I2C_Mem_Read(&hi2c1, 0x33, 0x2C, 1, &low[2], 1, HAL_MAX_DELAY);
-
-  raw[0] = (int16_t)(((int16_t)((high[0] << 8) | low[0])) >> 4);
-  raw[1] = (int16_t)(((int16_t)((high[1] << 8) | low[1])) >> 4);
-  raw[2] = (int16_t)(((int16_t)((high[2] << 8) | low[2])) >> 4);
+  // buf[0]=XL, buf[1]=XH, buf[2]=YL, buf[3]=YH, buf[4]=ZL, buf[5]=ZH
+  raw[0] = (int16_t)(((int16_t)((buf[1] << 8) | buf[0])) >> 4);
+  raw[1] = (int16_t)(((int16_t)((buf[3] << 8) | buf[2])) >> 4);
+  raw[2] = (int16_t)(((int16_t)((buf[5] << 8) | buf[4])) >> 4);
 
   acc[0] = raw[0] * 0.001f;
   acc[1] = raw[1] * 0.001f;
@@ -160,6 +156,16 @@ void Offset_Gyro(void)
   gyro_offset[2] = 0.0f;
 }
 
+float Gyro_ReadY(void) 
+{
+    uint8_t tx[3] = {0xC0 | 0x2A, 0x00, 0x00}; 
+    uint8_t rx[3] = {0};
+    HAL_GPIO_WritePin(GPIOE, GPIO_PIN_3, GPIO_PIN_RESET);
+    HAL_SPI_TransmitReceive(&hspi1, tx, rx, 3, 5); 
+    HAL_GPIO_WritePin(GPIOE, GPIO_PIN_3, GPIO_PIN_SET);
+    int16_t y = (int16_t)((rx[2] << 8) | rx[1]);
+    return (y * 0.00875f);
+}
 /* USER CODE END 0 */
 
 /**
@@ -590,45 +596,54 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
   if (htim->Instance == TIM2)
   {
-    Read_LSM();
+    Read_LSM(); 
 
-    uint8_t yH, yL;
-    reader(0x80 | 0x2B, &yH);
-    reader(0x80 | 0x2A, &yL);
-
-    int16_t y = read_16bit(yH, yL);
-    float x_dps = y * 0.00875f - gyro_offset[1];
+    // --- BURST READ THE GYRO (Prevents Lockup) ---
+    float x_dps = Gyro_ReadY() - gyro_offset[1];
+    
     float acc_angle = atan2f(acc[0], acc[2]) * 57.2958f;
     float dt = 0.005f;
 
     angle = 0.98f * (angle + x_dps * dt) + 0.02f * acc_angle;
-    // PID
+    
+    // --- TUNED PID ---
     static float integral = 0.0f;
-    static float prev_error = 0.0f;
-    float Kp = 30.0f;
-    float Ki = 0.5f;
-    float Kd = 5.0f;
+    float Kp = 1.15f;   // Slightly stiffer spring
+    float Ki = 0.05f;   // Much lower Ki to prevent the 5-second death push
+    float Kd = 0.15f;   // Stronger shock absorber to stop jitter
 
-    float error = 0.0f - angle;
+    float error = -3.75f - angle; // Your mechanical balance point
+    
     integral += error * dt;
-    if (integral > 500) integral = 500;
-    if (integral < -500) integral = -500;
-    float derivative = (error - prev_error) / dt;
+    // Tighter clamp to prevent integral windup!
+    if (integral > 200) integral = 200; 
+    if (integral < -200) integral = -200;
+    
+    float derivative = -x_dps; 
+    
     float output = Kp * error + Ki * integral + Kd * derivative;
-    prev_error = error;
 
     int pwm = (int)fabsf(output);
-    if (pwm > 999) pwm = 999;
-    if (pwm < 50) pwm = 0;
+    
+    if (pwm > 0) {
+        pwm += 80; // Friction deadband
+    }
 
-    if (output < 0) {
+    if (pwm > 999) pwm = 999;
+    
+    if (fabsf(angle) > 40.0f) {
+        pwm = 0;
+        integral = 0.0f; // Reset integral if it falls!
+    }
+
+    if (output < 0 && pwm > 0) {
       __HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, pwm);
       __HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_2, pwm);
       HAL_GPIO_WritePin(GPIOB, GPIO_PIN_5, GPIO_PIN_SET);
       HAL_GPIO_WritePin(GPIOD, GPIO_PIN_4, GPIO_PIN_RESET);
       HAL_GPIO_WritePin(GPIOD, GPIO_PIN_2, GPIO_PIN_SET);
       HAL_GPIO_WritePin(GPIOB, GPIO_PIN_9, GPIO_PIN_RESET);
-    } else if (output > 0) {
+    } else if (output > 0 && pwm > 0) {
       __HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, pwm);
       __HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_2, pwm);
       HAL_GPIO_WritePin(GPIOB, GPIO_PIN_5, GPIO_PIN_RESET);
@@ -639,6 +654,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
       __HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, 0);
       __HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_2, 0);
     }
+    
     acc_v = acc_angle;
     gyro_v = x_dps;
     ang_v = angle;

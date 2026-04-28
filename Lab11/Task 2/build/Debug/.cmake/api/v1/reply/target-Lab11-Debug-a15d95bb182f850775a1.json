@@ -82,23 +82,23 @@
 			[
 				{
 					"backtrace" : 4,
-					"path" : "/home/labt1/MCI-Labs/Lab11/Lab11/cmake/stm32cubemx/../../Core/Inc"
+					"path" : "/home/mohibfaaz/MCI-Labs/Lab11/Task 2/cmake/stm32cubemx/../../Core/Inc"
 				},
 				{
 					"backtrace" : 4,
-					"path" : "/home/labt1/MCI-Labs/Lab11/Lab11/cmake/stm32cubemx/../../Drivers/STM32F3xx_HAL_Driver/Inc"
+					"path" : "/home/mohibfaaz/MCI-Labs/Lab11/Task 2/cmake/stm32cubemx/../../Drivers/STM32F3xx_HAL_Driver/Inc"
 				},
 				{
 					"backtrace" : 4,
-					"path" : "/home/labt1/MCI-Labs/Lab11/Lab11/cmake/stm32cubemx/../../Drivers/STM32F3xx_HAL_Driver/Inc/Legacy"
+					"path" : "/home/mohibfaaz/MCI-Labs/Lab11/Task 2/cmake/stm32cubemx/../../Drivers/STM32F3xx_HAL_Driver/Inc/Legacy"
 				},
 				{
 					"backtrace" : 4,
-					"path" : "/home/labt1/MCI-Labs/Lab11/Lab11/cmake/stm32cubemx/../../Drivers/CMSIS/Device/ST/STM32F3xx/Include"
+					"path" : "/home/mohibfaaz/MCI-Labs/Lab11/Task 2/cmake/stm32cubemx/../../Drivers/CMSIS/Device/ST/STM32F3xx/Include"
 				},
 				{
 					"backtrace" : 4,
-					"path" : "/home/labt1/MCI-Labs/Lab11/Lab11/cmake/stm32cubemx/../../Drivers/CMSIS/Include"
+					"path" : "/home/mohibfaaz/MCI-Labs/Lab11/Task 2/cmake/stm32cubemx/../../Drivers/CMSIS/Include"
 				}
 			],
 			"language" : "C",
@@ -145,23 +145,23 @@
 			[
 				{
 					"backtrace" : 4,
-					"path" : "/home/labt1/MCI-Labs/Lab11/Lab11/cmake/stm32cubemx/../../Core/Inc"
+					"path" : "/home/mohibfaaz/MCI-Labs/Lab11/Task 2/cmake/stm32cubemx/../../Core/Inc"
 				},
 				{
 					"backtrace" : 4,
-					"path" : "/home/labt1/MCI-Labs/Lab11/Lab11/cmake/stm32cubemx/../../Drivers/STM32F3xx_HAL_Driver/Inc"
+					"path" : "/home/mohibfaaz/MCI-Labs/Lab11/Task 2/cmake/stm32cubemx/../../Drivers/STM32F3xx_HAL_Driver/Inc"
 				},
 				{
 					"backtrace" : 4,
-					"path" : "/home/labt1/MCI-Labs/Lab11/Lab11/cmake/stm32cubemx/../../Drivers/STM32F3xx_HAL_Driver/Inc/Legacy"
+					"path" : "/home/mohibfaaz/MCI-Labs/Lab11/Task 2/cmake/stm32cubemx/../../Drivers/STM32F3xx_HAL_Driver/Inc/Legacy"
 				},
 				{
 					"backtrace" : 4,
-					"path" : "/home/labt1/MCI-Labs/Lab11/Lab11/cmake/stm32cubemx/../../Drivers/CMSIS/Device/ST/STM32F3xx/Include"
+					"path" : "/home/mohibfaaz/MCI-Labs/Lab11/Task 2/cmake/stm32cubemx/../../Drivers/CMSIS/Device/ST/STM32F3xx/Include"
 				},
 				{
 					"backtrace" : 4,
-					"path" : "/home/labt1/MCI-Labs/Lab11/Lab11/cmake/stm32cubemx/../../Drivers/CMSIS/Include"
+					"path" : "/home/mohibfaaz/MCI-Labs/Lab11/Task 2/cmake/stm32cubemx/../../Drivers/CMSIS/Include"
 				}
 			],
 			"language" : "ASM",
@@ -188,7 +188,7 @@
 				"role" : "flags"
 			},
 			{
-				"fragment" : "-mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard  -T \"/home/labt1/MCI-Labs/Lab11/Lab11/STM32F303XX_FLASH.ld\" --specs=nano.specs -Wl,-Map=Lab11.map -Wl,--gc-sections -Wl,--print-memory-usage",
+				"fragment" : "-mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard  -T \"/home/mohibfaaz/MCI-Labs/Lab11/Task 2/STM32F303XX_FLASH.ld\" --specs=nano.specs -Wl,-Map=Lab11.map -Wl,--gc-sections -Wl,--print-memory-usage",
 				"role" : "flags"
 			},
 			{

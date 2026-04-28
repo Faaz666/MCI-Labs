@@ -60,14 +60,14 @@
 				{
 					"directoryIndex" : 0,
 					"id" : "Lab11::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-Lab11-Debug-6cf653d88f6069af0c14.json",
+					"jsonFile" : "target-Lab11-Debug-a15d95bb182f850775a1.json",
 					"name" : "Lab11",
 					"projectIndex" : 0
 				},
 				{
 					"directoryIndex" : 1,
 					"id" : "STM32_Drivers::@768a070a0fe75716b479",
-					"jsonFile" : "target-STM32_Drivers-Debug-fbd59b20579799c32909.json",
+					"jsonFile" : "target-STM32_Drivers-Debug-2cba2b22e4aaaf7b2de7.json",
 					"name" : "STM32_Drivers",
 					"projectIndex" : 0
 				}
@@ -77,8 +77,8 @@
 	"kind" : "codemodel",
 	"paths" : 
 	{
-		"build" : "/home/labt1/MCI-Labs/Lab11/Lab11/build/Debug",
-		"source" : "/home/labt1/MCI-Labs/Lab11/Lab11"
+		"build" : "/home/mohibfaaz/MCI-Labs/Lab11/Task 2/build/Debug",
+		"source" : "/home/mohibfaaz/MCI-Labs/Lab11/Task 2"
 	},
 	"version" : 
 	{
