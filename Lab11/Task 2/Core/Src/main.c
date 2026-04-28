@@ -166,6 +166,50 @@ float Gyro_ReadY(void)
     int16_t y = (int16_t)((rx[2] << 8) | rx[1]);
     return (y * 0.00875f);
 }
+/*
+void Run_Twiddle(uint32_t survival_time, float *kp, float *ki, float *kd) {
+    static float p[3] = {1.085f, 0.05f, 0.15f};
+    static float dp[3] = {0.1f, 0.01f, 0.05f};
+    static uint32_t best_time = 0;
+    static int idx = 0;
+    static int state = 0;
+
+    if ((dp[0] + dp[1] + dp[2]) < 0.001f) {
+        *kp = p[0]; *ki = p[1]; *kd = p[2];
+        return;
+    }
+
+    if (best_time == 0) {
+        best_time = survival_time;
+        p[idx] += dp[idx];
+        state = 1;
+    } else if (state == 1) {
+        if (survival_time > best_time) {
+            best_time = survival_time;
+            dp[idx] *= 1.1f;
+            idx = (idx + 1) % 3;
+            p[idx] += dp[idx];
+            state = 1;
+        } else {
+            p[idx] -= 2.0f * dp[idx];
+            state = 2;
+        }
+    } else if (state == 2) {
+        if (survival_time > best_time) {
+            best_time = survival_time;
+            dp[idx] *= 1.1f;
+        } else {
+            p[idx] += dp[idx];
+            dp[idx] *= 0.9f;
+        }
+        idx = (idx + 1) % 3;
+        p[idx] += dp[idx];
+        state = 1;
+    }
+
+    *kp = p[0]; *ki = p[1]; *kd = p[2];
+}
+*/
 /* USER CODE END 0 */
 
 /**
@@ -597,7 +641,8 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
   if (htim->Instance == TIM2)
   {
     Read_LSM(); 
-
+    static uint32_t survival_ticks = 0;
+    survival_ticks++;
     float x_dps = Gyro_ReadY() - gyro_offset[1];
     
     float acc_angle = atan2f(acc[0], acc[2]) * 57.2958f;
@@ -632,7 +677,16 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
         pwm = 0;
         integral = 0.0f; 
     }
-
+    if (fabsf(angle) > 40.0f) {
+        pwm = 0;
+        integral = 0.0f;
+        
+        /*
+        Run_Twiddle(survival_ticks, &Kp, &Ki, &Kd);
+        */
+        
+        survival_ticks = 0;
+    }
     if (output < 0 && pwm > 0) {
       __HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, pwm);
       __HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_2, pwm);
